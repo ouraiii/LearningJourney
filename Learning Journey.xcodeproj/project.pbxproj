@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		B620365F2EA1153E0061891D /* Learning Journey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Learning Journey.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B620365F2EA1153E0061891D /* Learning Journey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Learning Journey.app"; path = "/Users/ranaalqubaly/Desktop/Learning Journey/build/Debug-iphoneos/Learning Journey.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,16 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				B62036612EA1153E0061891D /* Learning Journey */,
-				B62036602EA1153E0061891D /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		B62036602EA1153E0061891D /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				B620365F2EA1153E0061891D /* Learning Journey.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,7 +86,7 @@
 			mainGroup = B62036562EA1153E0061891D;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = B62036602EA1153E0061891D /* Products */;
+			productRefGroup = B62036562EA1153E0061891D;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (

@@ -15,6 +15,7 @@ struct task2: View {
     @State private var currentMonthShort = "OCT"
     @State private var selectedDate = Date()//here
     @State private var showDatePicker = false//here
+    @State private var lockedDays: Set<Int> = []
 
     
     // MARK: - Initializer to make current day default
@@ -216,56 +217,65 @@ struct task2: View {
 
                 // MARK: Main Action Button
                 Button(action: {
-                    withAnimation(.spring()) {
-                        switch status {
-                        case .defaultState:
-                            status = .learned
-                            progressLog[selectedDay] = .learned
-                        case .learned:
-                            status = .freezed
-                            progressLog[selectedDay] = .freezed
-                        case .freezed:
-                            status = .defaultState
-                            progressLog[selectedDay] = nil
+                    // Only allow if today hasn't been logged yet
+                    if !lockedDays.contains(selectedDay) {
+                        withAnimation(.spring()) {
+                            switch status {
+                            case .defaultState:
+                                status = .learned
+                                progressLog[selectedDay] = .learned
+                                lockedDays.insert(selectedDay) // ✅ lock current day
+
+                            case .learned:
+                                status = .freezed
+                                progressLog[selectedDay] = .freezed
+                                lockedDays.insert(selectedDay) // ✅ lock current day
+
+                            case .freezed:
+                                break // do nothing, stays locked
+                            }
                         }
                     }
                 }) {
                     Text(status.mainButtonTitle)
                         .foregroundColor(.white)
                         .frame(width: 270, height: 270)
-                        .background(Circle().fill(Color.darkOrange))
+                        .background(
+                            Circle()
+                                .fill(status.mainButtonColor) // ✅ dynamic color
+                        )
                         .glassEffect()
                         .padding(20)
                         .font(status.font)
                 }
+                .disabled(lockedDays.contains(selectedDay)) // ✅ disable after first press
+                .opacity(lockedDays.contains(selectedDay) ? 0.7 : 1)
+
                 
                 // MARK: Log as Freezed Button
-                VStack(spacing: 6) {
-                    Button(action: {
-                        withAnimation {
-                            if canFreeze {
-                                status = .freezed
-                                progressLog[selectedDay] = .freezed
-                            }
+                // MARK: Log as Freezed Button
+                Button(action: {
+                    withAnimation {
+                        if canFreeze && !lockedDays.contains(selectedDay) {
+                            status = .freezed
+                            progressLog[selectedDay] = .freezed
+                            lockedDays.insert(selectedDay) // ✅ lock after freeze
                         }
-                    }) {
-                        Text(canFreeze ? "Log as Freezed" : "No Freezes Left")
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 56)
-                            //.background(canFreeze ? Color.blue1 : Color.gray)
-                            .foregroundColor(.white)
-                            .cornerRadius(50)
-                            .glassEffect(.clear.tint(Color.blue1.opacity(0.6)))
-                            
                     }
-                    .padding(.horizontal)
-                    
-                    Text(freezesUsedText)
-                        .font(.caption)
-                        .foregroundColor(.gray)
+                }) {
+                    Text(canFreeze ? "Log as Freezed" : "No Freezes Left")
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 56)
+                        .foregroundColor(.white)
+                        .cornerRadius(50)
+                        .glassEffect(.clear.tint(Color.blue1.opacity(0.6)))
                 }
-                .padding(.bottom, 40)
+                .disabled(lockedDays.contains(selectedDay)) // ✅ disable if locked
+                .opacity(lockedDays.contains(selectedDay) ? 0.6 : 1)
+                .padding(.horizontal)
+
+                //.padding(.bottom, 40)
             }
         }
     }
@@ -344,3 +354,4 @@ enum ActivityStatus {
 #Preview {
     task2(selectedDuration: "Week", subject: "Swift")
 }
+
