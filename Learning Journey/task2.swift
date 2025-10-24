@@ -175,6 +175,7 @@ struct task2: View {
                                                         isSelected ? Color.orange.opacity(0.5) :
                                                         Color.clear
                                                     )
+                                                    
                                             )
 
                                     }
@@ -239,13 +240,13 @@ struct task2: View {
                     }
                 }) {
                     Text(status.mainButtonTitle)
-                        .foregroundColor(.white)
+                        .foregroundColor(status.mainFontColor.opacity(100))
                         .frame(width: 270, height: 270)
                         .background(
                             Circle()
-                                .fill(status.mainButtonColor) // ✅ dynamic color
+                                .fill(status.mainButtonColor.opacity(100))// ✅ dynamic color
                         )
-                        .glassEffect()
+                        .glassEffect(.clear)
                         .font(status.font)
                 }
                 .disabled(lockedDays.contains(selectedDay)) // ✅ disable after first press
@@ -349,11 +350,20 @@ enum ActivityStatus {
     }
     var mainButtonColor: Color {
             switch self {
-            case .defaultState: return Color.orange
-            case .learned: return Color.darkOrange.opacity(100) // darker orange
-            case .freezed: return Color.blue1.opacity(0.5)
+            case .defaultState: return Color.darkOrange
+            case .learned: return Color.blackOrange.opacity(100) // darker orange
+            case .freezed: return Color.blackBlue.opacity(100)
             }
         }
+    
+    var mainFontColor: Color {
+            switch self {
+            case .defaultState: return Color.white
+            case .learned: return Color.orange.opacity(100)
+            case .freezed: return Color.blue1.opacity(100)
+            }
+        }
+    
 }
 
 
