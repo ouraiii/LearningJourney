@@ -335,9 +335,9 @@ enum ActivityStatus {
     
     var mainButtonTitle: String {
         switch self {
-        case .defaultState: return "Log as Learned"
-        case .learned: return "Learned Today"
-        case .freezed: return "Day Freezed"
+        case .defaultState: return "Log as       Learned"
+        case .learned: return "Learned            Today"
+        case .freezed: return "Day               Freezed"
         }
     }
     
