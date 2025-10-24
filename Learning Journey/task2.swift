@@ -219,9 +219,16 @@ struct task2: View {
                 // MARK: - Main Button Area
                 if isGoalCompleted {
                     VStack(spacing: 16) {
-                        Text("👏 Well done!")
+                     
+                        Image(systemName: "hands.clap.fill")
+                                    .symbolRenderingMode(.hierarchical)
+                                    .foregroundColor(.orange)
+                                    .font(.system(size: 42))
+                                    .padding(.bottom, 6)
+                        
+                        Text("Well done!")
                             .font(.title3.bold())
-                            .foregroundColor(.orange)
+                            .foregroundColor(.white)
                         Text("Goal completed! Start learning again or set a new goal.")
                             .foregroundColor(.gray)
                             .font(.subheadline)
@@ -233,11 +240,13 @@ struct task2: View {
                             isGoalCompleted = false
                         }) {
                             Text("Set new learning goal")
+                                .foregroundColor(.white)
                                 .fontWeight(.semibold)
-                                .frame(maxWidth: .infinity)
+                                .frame(maxWidth: 225)
                                 .padding()
-                                .background(Color.orange)
-                                .cornerRadius(12)
+                                .background(Color.darkOrange)
+                                .cornerRadius(25)
+                                .glassEffect(.clear)
                         }
                         
                         Button(action: {
@@ -246,7 +255,7 @@ struct task2: View {
                             isGoalCompleted = false
                         }) {
                             Text("Set same learning goal and duration")
-                                .font(.footnote)
+                                .font(.headline)
                                 .foregroundColor(.orange)
                         }
                     }
