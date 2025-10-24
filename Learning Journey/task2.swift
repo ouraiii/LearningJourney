@@ -291,6 +291,11 @@ struct task2: View {
                                 status = .freezed
                                 progressLog[selectedDay] = .freezed
                                 lockedDays.insert(selectedDay)
+                                
+                                // ✅ Delay ensures the state updates before checking
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    checkGoalCompletion()
+                                }
                             }
                         }
                     }) {
@@ -302,6 +307,7 @@ struct task2: View {
                             .cornerRadius(50)
                             .glassEffect(.clear.tint(Color.blue1.opacity(0.6)))
                     }
+
                     
                     Text(freezesUsedText)
                         .font(.caption2)
