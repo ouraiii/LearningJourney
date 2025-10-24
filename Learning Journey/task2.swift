@@ -78,6 +78,7 @@ struct task2: View {
                         CircleButton(icon: "pencil.and.outline")
                     }
                 }
+                
                 .padding(.horizontal)
                 .padding(.top, 10)
                 
@@ -172,7 +173,7 @@ struct task2: View {
                                                             dayStatus == .freezed ? Color.blue1.opacity(0.35) :
                                                         isToday ? Color.orange.opacity(0.8) :
                                                         isSelected ? Color.orange.opacity(0.5) :
-                                                        Color.gray.opacity(0.3)
+                                                        Color.clear
                                                     )
                                             )
 
@@ -245,7 +246,6 @@ struct task2: View {
                                 .fill(status.mainButtonColor) // ✅ dynamic color
                         )
                         .glassEffect()
-                        .padding(20)
                         .font(status.font)
                 }
                 .disabled(lockedDays.contains(selectedDay)) // ✅ disable after first press
@@ -253,7 +253,8 @@ struct task2: View {
 
                 
                 // MARK: Log as Freezed Button
-                // MARK: Log as Freezed Button
+                
+                
                 Button(action: {
                     withAnimation {
                         if canFreeze && !lockedDays.contains(selectedDay) {
@@ -270,7 +271,12 @@ struct task2: View {
                         .foregroundColor(.white)
                         .cornerRadius(50)
                         .glassEffect(.clear.tint(Color.blue1.opacity(0.6)))
+                    
                 }
+                Text(freezesUsedText)
+                .font(.caption2)
+                .foregroundColor(.gray)
+                
                 .disabled(lockedDays.contains(selectedDay)) // ✅ disable if locked
                 .opacity(lockedDays.contains(selectedDay) ? 0.6 : 1)
                 .padding(.horizontal)
@@ -344,8 +350,8 @@ enum ActivityStatus {
     var mainButtonColor: Color {
             switch self {
             case .defaultState: return Color.orange
-            case .learned: return Color.darkOrange // darker orange
-            case .freezed: return Color.blue1
+            case .learned: return Color.darkOrange.opacity(100) // darker orange
+            case .freezed: return Color.blue1.opacity(0.5)
             }
         }
 }
@@ -354,4 +360,5 @@ enum ActivityStatus {
 #Preview {
     task2(selectedDuration: "Week", subject: "Swift")
 }
+
 
