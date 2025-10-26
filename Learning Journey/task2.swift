@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct task2: View {
-    let selectedDuration: String
-    let subject: String
+    @Binding var selectedDuration: String
+    @Binding var subject: String
 
     // MARK: - State
     let calendar = Calendar.current
@@ -12,12 +12,7 @@ struct task2: View {
     @State private var progressLog: [Date: ActivityStatus] = [:]
     @State private var lockedDays: Set<Date> = []
     @State private var isGoalCompleted = false
-
-    // MARK: - Init
-    init(selectedDuration: String, subject: String) {
-        self.selectedDuration = selectedDuration
-        self.subject = subject
-    }
+    @State private var navigateToTask4 = false // ✅ navigation trigger
 
     // MARK: - Computed properties
     var weekDates: [Date] {
@@ -80,7 +75,12 @@ struct task2: View {
                     Spacer()
                     HStack(spacing: 16) {
                         CircleButton(icon: "calendar")
-                        CircleButton(icon: "person.circle")
+                        // ✅ Navigate to task4 when tapping person icon
+                        Button(action: {
+                            navigateToTask4 = true
+                        }) {
+                            CircleButton(icon: "person.circle")
+                        }
                     }
                 }
                 .padding(.horizontal)
@@ -131,7 +131,7 @@ struct task2: View {
                                 set: { newDate in
                                     selectedDate = newDate
                                     withAnimation {
-                                        showDatePicker = false  // ✅ Automatically close after selecting
+                                        showDatePicker = false
                                     }
                                 }
                             ), displayedComponents: [.date])
@@ -143,7 +143,6 @@ struct task2: View {
                             .cornerRadius(16)
                             .padding(.horizontal)
                         }
-
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 5) {
@@ -218,10 +217,9 @@ struct task2: View {
                             .font(.subheadline)
                             .multilineTextAlignment(.center)
 
+                        // ✅ Navigate to task4
                         Button(action: {
-                            progressLog.removeAll()
-                            lockedDays.removeAll()
-                            isGoalCompleted = false
+                            navigateToTask4 = true
                         }) {
                             Text("Set new learning goal")
                                 .foregroundColor(.white)
@@ -245,6 +243,7 @@ struct task2: View {
                     }
                     .padding(.horizontal)
                 } else {
+                    // Main big circle button
                     Button(action: {
                         if !lockedDays.contains(selectedDay) {
                             withAnimation(.spring()) {
@@ -277,6 +276,7 @@ struct task2: View {
                     .disabled(lockedDays.contains(selectedDay))
                     .opacity(lockedDays.contains(selectedDay) ? 0.7 : 1)
 
+                    // Freeze button
                     Button(action: {
                         withAnimation {
                             if canFreeze && !lockedDays.contains(selectedDay) {
@@ -303,6 +303,14 @@ struct task2: View {
                         .foregroundColor(.gray)
                         .padding(.horizontal)
                 }
+            }
+
+            // ✅ Hidden NavigationLink to task4
+            NavigationLink(
+                destination: task4(selectedDuration: $selectedDuration, subject: $subject),
+                isActive: $navigateToTask4
+            ) {
+                EmptyView()
             }
         }
     }
@@ -375,5 +383,7 @@ enum ActivityStatus {
 }
 
 #Preview {
-    task2(selectedDuration: "Week", subject: "Swift")
+    NavigationStack {
+        task2(selectedDuration: .constant("Week"), subject: .constant("Swift"))
+    }
 }

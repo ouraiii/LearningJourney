@@ -90,7 +90,7 @@ struct task1: View {
                     Spacer()
                     
                     // Start button
-                    NavigationLink(destination: task2(selectedDuration: selectedDuration, subject: subject)) {
+                    NavigationLink(destination: task2(selectedDuration: $selectedDuration, subject: $subject)) {
                         Text("Start learning")
                             .fontWeight(.semibold)
                             .padding()
