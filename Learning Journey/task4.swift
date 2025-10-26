@@ -16,13 +16,7 @@ struct task4: View {
             VStack(spacing: 30) {
                 // MARK: Header
                 HStack {
-                    Button(action: {
-                        // Go back
-                    }) {
-                        Image(systemName: "chevron.left")
-                            .foregroundColor(.white)
-                            .font(.title3.bold())
-                    }
+                    
                     
                     Spacer()
                     Text("Learning Goal")
@@ -35,9 +29,14 @@ struct task4: View {
                             showUpdatePopup = true
                         }
                     }) {
-                        Image(systemName: "checkmark")
-                            .foregroundColor(.white)
-                            .font(.largeTitle)
+                            Circle()
+                                .fill(Color.darkOrange)
+                                .frame(width: 36, height: 36)
+                                .overlay(Image(systemName: "checkmark")
+                                .foregroundColor(.white))
+                                .font(.title2)
+                                .glassEffect(.clear)
+                        
                     }
                 }
                 .padding(.horizontal)
@@ -72,9 +71,10 @@ struct task4: View {
                                     .fontWeight(.medium)
                                     .padding(.horizontal, 30)
                                     .padding(.vertical, 15)
+                                    .glassEffect(.clear)
                                     .background(
                                         Capsule()
-                                            .fill(selectedDuration == duration ? Color.darkOrange.opacity(0.9) : Color.gray.opacity(0.05))
+                                            .fill(selectedDuration == duration ? Color.darkOrange.opacity(0.9): Color.gray.opacity(0.05))
                                     )
                                     .foregroundColor(.white)
                             }
