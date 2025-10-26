@@ -156,8 +156,8 @@ struct task2: View {
                                                     .fill(
                                                         dayStatus == .learned ? Color.orange.opacity(0.35) :
                                                         dayStatus == .freezed ? Color.blue1.opacity(0.35) :
-                                                        isToday ? Color.orange.opacity(0.8) :
-                                                        isSelected ? Color.orange.opacity(0.5) :
+                                                        isToday ? Color.orange.opacity(100) :
+                                                            isSelected ? Color.orange.opacity(0.8) :
                                                         Color.clear
                                                     )
                                             )
