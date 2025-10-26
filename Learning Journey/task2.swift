@@ -125,15 +125,24 @@ struct task2: View {
                         }
 
                         if showDatePicker {
-                            DatePicker("", selection: $selectedDate, displayedComponents: [.date])
-                                .datePickerStyle(.wheel)
-                                .labelsHidden()
-                                .tint(.orange)
-                                .colorScheme(.dark)
-                                .background(Color.black)
-                                .cornerRadius(16)
-                                .padding(.horizontal)
+                            DatePicker("", selection: Binding(
+                                get: { selectedDate },
+                                set: { newDate in
+                                    selectedDate = newDate
+                                    withAnimation {
+                                        showDatePicker = false  // ✅ Automatically close after selecting
+                                    }
+                                }
+                            ), displayedComponents: [.date])
+                            .datePickerStyle(.wheel)
+                            .labelsHidden()
+                            .tint(.orange)
+                            .colorScheme(.dark)
+                            .background(Color.black)
+                            .cornerRadius(16)
+                            .padding(.horizontal)
                         }
+
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 5) {
