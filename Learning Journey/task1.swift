@@ -7,7 +7,7 @@ struct task1: View {
     var body: some View {
         //NavigationStack {
             ZStack {
-                Color.black
+                Color(.systemBackground)
                     .ignoresSafeArea()
                 
                 VStack(spacing: 30) {

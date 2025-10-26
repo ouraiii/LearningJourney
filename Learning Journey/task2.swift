@@ -68,8 +68,9 @@ struct task2: View {
     // MARK: - Body
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
-
+            Color(.systemBackground)
+                .ignoresSafeArea()
+            
             VStack(spacing: 28) {
                 // MARK: Header
                 HStack {
