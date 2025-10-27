@@ -100,7 +100,7 @@ struct task4: View {
                 
                 VStack(spacing: 18) {
                     Text("Update Learning Goal")
-                        .font(.headline.bold())
+                        .font(.title3.bold())
                         .foregroundColor(.primary)
                     
                     Text("If you update now, your streak will start over.")
@@ -148,14 +148,16 @@ struct task4: View {
 
                         }
                     }
+                    
                     .padding(.horizontal)
                 }
                 .frame(width: 320)
                 .padding()
                 .background(Color(.systemBackground))
-                .cornerRadius(24)
                 .shadow(radius: 20)
                 .zIndex(2)
+                .glassEffect(.clear)
+                .cornerRadius(90)
             }
             
             // MARK: NavigationLink
