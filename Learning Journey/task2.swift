@@ -12,7 +12,8 @@ struct task2: View {
     @State private var progressLog: [Date: ActivityStatus] = [:]
     @State private var lockedDays: Set<Date> = []
     @State private var isGoalCompleted = false
-    @State private var navigateToTask4 = false // ✅ navigation trigger
+    @State private var navigateToTask4 = false
+    @State private var navigateToTask5 = false // ✅ Added navigation trigger for Task 5
 
     // MARK: - Computed properties
     var weekDates: [Date] {
@@ -65,7 +66,7 @@ struct task2: View {
         ZStack {
             Color(.systemBackground)
                 .ignoresSafeArea()
-            
+
             VStack(spacing: 28) {
                 // MARK: Header
                 HStack {
@@ -74,8 +75,14 @@ struct task2: View {
                         .foregroundColor(.white)
                     Spacer()
                     HStack(spacing: 16) {
-                        CircleButton(icon: "calendar")
-                        // ✅ Navigate to task4 when tapping person icon
+                        // ✅ Open Task 5 (Calendar)
+                        Button(action: {
+                            navigateToTask5 = true
+                        }) {
+                            CircleButton(icon: "calendar")
+                        }
+
+                        // ✅ Navigate to Task 4 when tapping person icon
                         Button(action: {
                             navigateToTask4 = true
                         }) {
@@ -166,7 +173,7 @@ struct task2: View {
                                                         dayStatus == .learned ? Color.orange.opacity(0.35) :
                                                         dayStatus == .freezed ? Color.blue1.opacity(0.35) :
                                                         isToday ? Color.orange.opacity(100) :
-                                                            isSelected ? Color.orange.opacity(0.8) :
+                                                        isSelected ? Color.orange.opacity(0.8) :
                                                         Color.clear
                                                     )
                                             )
@@ -217,7 +224,7 @@ struct task2: View {
                             .font(.subheadline)
                             .multilineTextAlignment(.center)
 
-                        // ✅ Navigate to task4
+                        // ✅ Navigate to Task 4
                         Button(action: {
                             navigateToTask4 = true
                         }) {
@@ -305,16 +312,24 @@ struct task2: View {
                 }
             }
 
-            // ✅ Hidden NavigationLink to task4
+            // ✅ Hidden Navigation Links
             NavigationLink(
                 destination: task4(selectedDuration: $selectedDuration, subject: $subject),
                 isActive: $navigateToTask4
             ) {
                 EmptyView()
             }
+
+            NavigationLink(
+                destination: task5(progressLog: progressLog),
+                isActive: $navigateToTask5
+            ) {
+                EmptyView()
+            }
         }
     }
 }
+
 
 // MARK: - Supporting Components
 struct CircleButton: View {
