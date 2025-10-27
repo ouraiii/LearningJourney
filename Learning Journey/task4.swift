@@ -123,7 +123,10 @@ struct task4: View {
                                 .padding()
                                 .background(Color(.tertiarySystemBackground))
                                 .foregroundColor(.primary)
-                                .cornerRadius(16)
+                                .glassEffect(.clear)
+                                .cornerRadius(25)
+
+
                         }
                         
                         Button(action: {
@@ -138,9 +141,11 @@ struct task4: View {
                                 .fontWeight(.semibold)
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(Color.accentColor)
+                                .background(Color.darkOrange)
                                 .foregroundColor(.white)
-                                .cornerRadius(16)
+                                .glassEffect(.clear)
+                                .cornerRadius(25)
+
                         }
                     }
                     .padding(.horizontal)

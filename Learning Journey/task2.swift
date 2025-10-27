@@ -13,7 +13,9 @@ struct task2: View {
     @State private var lockedDays: Set<Date> = []
     @State private var isGoalCompleted = false
     @State private var navigateToTask4 = false
-    @State private var navigateToTask5 = false // ✅ Added navigation trigger for Task 5
+    @State private var navigateToTask5 = false
+
+    @Environment(\.colorScheme) private var colorScheme // 👈 Detect system light/dark mode
 
     // MARK: - Computed properties
     var weekDates: [Date] {
@@ -64,7 +66,8 @@ struct task2: View {
     // MARK: - Body
     var body: some View {
         ZStack {
-            Color(.systemBackground)
+            // ✅ Adaptive background (light/dark)
+            (colorScheme == .dark ? Color.black : Color(.systemGray6))
                 .ignoresSafeArea()
 
             VStack(spacing: 28) {
@@ -72,21 +75,19 @@ struct task2: View {
                 HStack {
                     Text("Activity")
                         .font(.largeTitle.bold())
-                        .foregroundColor(.white)
+                        .foregroundColor(colorScheme == .dark ? .white : .black)
                     Spacer()
                     HStack(spacing: 16) {
-                        // ✅ Open Task 5 (Calendar)
                         Button(action: {
                             navigateToTask5 = true
                         }) {
-                            CircleButton(icon: "calendar")
+                            CircleButton(icon: "calendar", colorScheme: colorScheme)
                         }
 
-                        // ✅ Navigate to Task 4 when tapping person icon
                         Button(action: {
                             navigateToTask4 = true
                         }) {
-                            CircleButton(icon: "person.circle")
+                            CircleButton(icon: "person.circle", colorScheme: colorScheme)
                         }
                     }
                 }
@@ -103,7 +104,7 @@ struct task2: View {
                                 HStack(spacing: 4) {
                                     Text(monthName)
                                         .font(.headline)
-                                        .foregroundColor(.white)
+                                        .foregroundColor(colorScheme == .dark ? .white : .black)
                                     Image(systemName: showDatePicker ? "chevron.up" : "chevron.down")
                                         .foregroundColor(.orange)
                                         .font(.subheadline)
@@ -145,8 +146,7 @@ struct task2: View {
                             .datePickerStyle(.wheel)
                             .labelsHidden()
                             .tint(.orange)
-                            .colorScheme(.dark)
-                            .background(Color.black)
+                            .background(colorScheme == .dark ? Color.black : Color.white)
                             .cornerRadius(16)
                             .padding(.horizontal)
                         }
@@ -165,14 +165,14 @@ struct task2: View {
                                             .foregroundColor(.gray)
                                         Text("\(calendar.component(.day, from: day))")
                                             .font(.title.bold())
-                                            .foregroundColor(.white)
+                                            .foregroundColor(colorScheme == .dark ? .white : .black)
                                             .frame(width: 45, height: 45)
                                             .background(
                                                 Circle()
                                                     .fill(
                                                         dayStatus == .learned ? Color.orange.opacity(0.35) :
                                                         dayStatus == .freezed ? Color.blue1.opacity(0.35) :
-                                                        isToday ? Color.orange.opacity(100) :
+                                                        isToday ? Color.orange.opacity(1.0) :
                                                         isSelected ? Color.orange.opacity(0.8) :
                                                         Color.clear
                                                     )
@@ -192,7 +192,7 @@ struct task2: View {
 
                     Text("Learning \(subject)")
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(colorScheme == .dark ? .white : .black)
 
                     HStack(spacing: 14) {
                         SummaryPill(icon: "flame.fill", title: "Days Learned", count: daysLearned, color: .orange)
@@ -204,7 +204,7 @@ struct task2: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal)
-                .background(Color.gray.opacity(0.15))
+                .background(colorScheme == .dark ? Color.gray.opacity(0.15) : Color(.systemGray5))
                 .cornerRadius(18)
 
                 // MARK: Main Button Area
@@ -218,13 +218,12 @@ struct task2: View {
 
                         Text("Well done!")
                             .font(.title3.bold())
-                            .foregroundColor(.white)
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
                         Text("Goal completed! Start learning again or set a new goal.")
                             .foregroundColor(.gray)
                             .font(.subheadline)
                             .multilineTextAlignment(.center)
 
-                        // ✅ Navigate to Task 4
                         Button(action: {
                             navigateToTask4 = true
                         }) {
@@ -250,7 +249,6 @@ struct task2: View {
                     }
                     .padding(.horizontal)
                 } else {
-                    // Main big circle button
                     Button(action: {
                         if !lockedDays.contains(selectedDay) {
                             withAnimation(.spring()) {
@@ -273,17 +271,13 @@ struct task2: View {
                         Text(status.mainButtonTitle)
                             .foregroundColor(status.mainFontColor)
                             .frame(width: 270, height: 270)
-                            .background(
-                                Circle()
-                                    .fill(status.mainButtonColor)
-                            )
+                            .background(Circle().fill(status.mainButtonColor))
                             .font(status.font)
                             .glassEffect(.clear)
                     }
                     .disabled(lockedDays.contains(selectedDay))
                     .opacity(lockedDays.contains(selectedDay) ? 0.7 : 1)
 
-                    // Freeze button
                     Button(action: {
                         withAnimation {
                             if canFreeze && !lockedDays.contains(selectedDay) {
@@ -312,35 +306,24 @@ struct task2: View {
                 }
             }
 
-            // ✅ Hidden Navigation Links
-            NavigationLink(
-                destination: task4(selectedDuration: $selectedDuration, subject: $subject),
-                isActive: $navigateToTask4
-            ) {
-                EmptyView()
-            }
-
-            NavigationLink(
-                destination: task5(progressLog: progressLog),
-                isActive: $navigateToTask5
-            ) {
-                EmptyView()
-            }
+            NavigationLink(destination: task4(selectedDuration: $selectedDuration, subject: $subject), isActive: $navigateToTask4) { EmptyView() }
+            NavigationLink(destination: task5(progressLog: progressLog), isActive: $navigateToTask5) { EmptyView() }
         }
     }
 }
 
-
-// MARK: - Supporting Components
 struct CircleButton: View {
     var icon: String
+    var colorScheme: ColorScheme
+
     var body: some View {
         Circle()
-            .fill(Color(white: 0.15))
+            .fill(colorScheme == .dark ? Color(white: 0.15) : Color(.systemGray5))
             .frame(width: 36, height: 36)
-            .overlay(Image(systemName: icon).foregroundColor(.white))
+            .overlay(Image(systemName: icon).foregroundColor(colorScheme == .dark ? .white : .black))
     }
 }
+
 
 struct SummaryPill: View {
     var icon: String
