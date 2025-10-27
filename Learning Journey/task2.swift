@@ -17,6 +17,20 @@ struct task2: View {
 
     @Environment(\.colorScheme) private var colorScheme // 👈 Detect system light/dark mode
 
+    // ✅ Persistent full history (saved to AppStorage)
+    @AppStorage("fullProgressHistory") private var fullProgressHistoryData: Data = Data()
+
+    private var fullProgressHistory: [Date: String] {
+        get {
+            (try? JSONDecoder().decode([Date: String].self, from: fullProgressHistoryData)) ?? [:]
+        }
+        set {
+            if let encoded = try? JSONEncoder().encode(newValue) {
+                fullProgressHistoryData = encoded
+            }
+        }
+    }
+
     // MARK: - Computed properties
     var weekDates: [Date] {
         guard let weekInterval = calendar.dateInterval(of: .weekOfMonth, for: selectedDate) else { return [] }
@@ -48,6 +62,19 @@ struct task2: View {
     var canFreeze: Bool { daysFreezed < freezeLimit }
     var freezesUsedText: String { "\(daysFreezed) out of \(freezeLimit) Freezes used" }
 
+    // MARK: - Helpers
+    private func convertHistoryToStatuses(_ history: [Date: String]) -> [Date: ActivityStatus] {
+        var result: [Date: ActivityStatus] = [:]
+        for (date, value) in history {
+            switch value {
+            case "learned": result[date] = .learned
+            case "freezed": result[date] = .freezed
+            default: break
+            }
+        }
+        return result
+    }
+
     // MARK: - Goal Completion
     private func checkGoalCompletion() {
         var totalGoalDays = 7
@@ -60,8 +87,42 @@ struct task2: View {
         let totalCompleted = daysLearned + daysFreezed
         if totalCompleted >= totalGoalDays {
             isGoalCompleted = true
+
+            // ✅ Merge current progress into persistent history
+            var updatedHistory = fullProgressHistory
+            for (date, status) in progressLog {
+                switch status {
+                case .learned:
+                    updatedHistory[date] = "learned"
+                case .freezed:
+                    updatedHistory[date] = "freezed"
+                default:
+                    break
+                }
+            }
+            updateFullProgressHistory(with: progressLog)
         }
     }
+    
+    private func updateFullProgressHistory(with progressLog: [Date: ActivityStatus]) {
+        var history = (try? JSONDecoder().decode([Date: String].self, from: fullProgressHistoryData)) ?? [:]
+
+        for (date, status) in progressLog {
+            switch status {
+            case .learned:
+                history[date] = "learned"
+            case .freezed:
+                history[date] = "freezed"
+            default:
+                break
+            }
+        }
+
+        if let encoded = try? JSONEncoder().encode(history) {
+            fullProgressHistoryData = encoded
+        }
+    }
+
 
     // MARK: - Body
     var body: some View {
@@ -306,8 +367,10 @@ struct task2: View {
                 }
             }
 
+            // ✅ Navigation Links
             NavigationLink(destination: task4(selectedDuration: $selectedDuration, subject: $subject), isActive: $navigateToTask4) { EmptyView() }
-            NavigationLink(destination: task5(progressLog: progressLog), isActive: $navigateToTask5) { EmptyView() }
+
+            NavigationLink(destination: task5(progressLog: convertHistoryToStatuses(fullProgressHistory)), isActive: $navigateToTask5) { EmptyView() }
         }
     }
 }
@@ -323,7 +386,6 @@ struct CircleButton: View {
             .overlay(Image(systemName: icon).foregroundColor(colorScheme == .dark ? .white : .black))
     }
 }
-
 
 struct SummaryPill: View {
     var icon: String
