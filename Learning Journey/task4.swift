@@ -8,6 +8,7 @@ struct task4: View {
     @State private var originalSubject = ""
     @State private var showUpdatePopup = false
     @State private var navigateToTask2 = false
+    @Environment(\.colorScheme) private var colorScheme  // 👈 Detect system appearance
 
     var body: some View {
         ZStack {
@@ -78,11 +79,20 @@ struct task4: View {
                                     .background(
                                         Capsule()
                                             .fill(selectedDuration == duration
-                                                  ?Color.darkOrange.opacity(0.9)
-                                                  : Color(.secondarySystemBackground))
+                                                  
+                                                  ?
+                                                  Color.darkOrange.opacity(0.9)
+                                                  :
+
+                                                    colorScheme == .dark
+                                                  ? Color.gray.opacity(0.1)  // 🌙 Dark mode background
+                                                  : Color.gray.opacity(100)               // 🔆 Light mode background
+                                                )
+                                        
                                     )
                                     .foregroundColor(selectedDuration == duration ? .white : .primary)
-                                    .shadow(radius: selectedDuration == duration ? 3 : 0)
+                                    .shadow(color: .white.opacity(0.4), radius: 0, x: 0, y: 0.5)
+
                             }
                         }
                     }
