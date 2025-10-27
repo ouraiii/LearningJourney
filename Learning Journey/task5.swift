@@ -43,7 +43,9 @@ struct task5: View {
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            // Adaptive background (light/dark)
+            Color(.systemBackground)
+                .ignoresSafeArea()
             
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 24) {
@@ -54,12 +56,12 @@ struct task5: View {
                             dismiss()
                         }) {
                             Image(systemName: "chevron.left")
-                                .foregroundColor(.white)
+                                .foregroundColor(.primary)
                                 .font(.title2)
                         }
                         Text("All activities")
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundColor(.primary)
                         Spacer()
                     }
                     .padding(.horizontal)
@@ -70,7 +72,7 @@ struct task5: View {
                         VStack(alignment: .leading, spacing: 10) {
                             Text(monthTitle(for: month))
                                 .font(.headline)
-                                .foregroundColor(.white)
+                                .foregroundColor(.primary)
                                 .padding(.horizontal)
                             
                             let days = daysInMonth(for: month)
@@ -93,10 +95,11 @@ struct task5: View {
                                                 .fill(
                                                     status == .learned ? Color.orange.opacity(0.7) :
                                                     status == .freezed ? Color.blue.opacity(0.7) :
-                                                    Color.gray.opacity(0.15)
+                                                    Color(.systemBackground)
                                                 )
+                                                .shadow(color: Color.gray.opacity(0.2), radius: 1)
                                         )
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.primary)
                                 }
                             }
                             .padding(.horizontal)

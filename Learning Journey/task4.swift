@@ -7,21 +7,23 @@ struct task4: View {
     @State private var originalDuration = ""
     @State private var originalSubject = ""
     @State private var showUpdatePopup = false
-    @State private var navigateToTask2 = false  // ✅ navigation trigger
+    @State private var navigateToTask2 = false
 
     var body: some View {
         ZStack {
-            Color(.systemBackground).ignoresSafeArea()
-
+            // MARK: Background
+            Color(.systemBackground)
+                .ignoresSafeArea()
+            
             VStack(spacing: 30) {
                 // MARK: Header
                 HStack {
-                    
-                    
                     Spacer()
+                    
                     Text("Learning Goal")
-                        .foregroundColor(.white)
+                        .foregroundColor(.primary)
                         .font(.headline.bold())
+                    
                     Spacer()
                     
                     Button(action: {
@@ -29,14 +31,15 @@ struct task4: View {
                             showUpdatePopup = true
                         }
                     }) {
-                            Circle()
-                                .fill(Color.darkOrange)
-                                .frame(width: 36, height: 36)
-                                .overlay(Image(systemName: "checkmark")
-                                .foregroundColor(.white))
-                                .font(.title2)
-                                .glassEffect(.clear)
-                        
+                        Circle()
+                            .fill(Color.darkOrange)
+                            .frame(width: 36, height: 36)
+                            .overlay(
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.white)
+                            )
+                            .font(.title2)
+                            .shadow(radius: 3)
                     }
                 }
                 .padding(.horizontal)
@@ -45,21 +48,21 @@ struct task4: View {
                 // MARK: Subject Field
                 VStack(alignment: .leading, spacing: 10) {
                     Text("I want to learn")
-                        .foregroundColor(.white)
+                        .foregroundColor(.primary)
                         .font(.title3.bold())
                     
                     TextField("e.g. Swift, Korean, Guitar...", text: $subject)
                         .padding(12)
-                        .background(.clear)
+                        //.background(Color(.secondarySystemBackground))
                         .cornerRadius(10)
-                        .foregroundColor(.gray.opacity(0.6))
+                        .foregroundColor(Color(.systemGray))
                 }
                 .padding(.horizontal)
                 
                 // MARK: Duration Picker
                 VStack(alignment: .leading, spacing: 10) {
                     Text("I want to learn it in a")
-                        .foregroundColor(.white)
+                        .foregroundColor(.primary)
                         .font(.title3.bold())
 
                     HStack(spacing: 8) {
@@ -74,9 +77,12 @@ struct task4: View {
                                     .glassEffect(.clear)
                                     .background(
                                         Capsule()
-                                            .fill(selectedDuration == duration ? Color.darkOrange.opacity(0.9): Color.gray.opacity(0.05))
+                                            .fill(selectedDuration == duration
+                                                  ?Color.darkOrange.opacity(0.9)
+                                                  : Color(.secondarySystemBackground))
                                     )
-                                    .foregroundColor(.white)
+                                    .foregroundColor(selectedDuration == duration ? .white : .primary)
+                                    .shadow(radius: selectedDuration == duration ? 3 : 0)
                             }
                         }
                     }
@@ -95,10 +101,10 @@ struct task4: View {
                 VStack(spacing: 18) {
                     Text("Update Learning Goal")
                         .font(.headline.bold())
-                        .foregroundColor(.white)
+                        .foregroundColor(.primary)
                     
                     Text("If you update now, your streak will start over.")
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                         .font(.subheadline)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
@@ -115,8 +121,8 @@ struct task4: View {
                                 .fontWeight(.semibold)
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(Color.gray.opacity(0.3))
-                                .foregroundColor(.white)
+                                .background(Color(.tertiarySystemBackground))
+                                .foregroundColor(.primary)
                                 .cornerRadius(16)
                         }
                         
@@ -125,14 +131,14 @@ struct task4: View {
                                 originalSubject = subject
                                 originalDuration = selectedDuration
                                 showUpdatePopup = false
-                                navigateToTask2 = true  // ✅ navigate after update
+                                navigateToTask2 = true
                             }
                         }) {
                             Text("Update")
                                 .fontWeight(.semibold)
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(Color.darkOrange)
+                                .background(Color.accentColor)
                                 .foregroundColor(.white)
                                 .cornerRadius(16)
                         }
@@ -141,13 +147,13 @@ struct task4: View {
                 }
                 .frame(width: 320)
                 .padding()
-                .background(Color(white: 0.15))
+                .background(Color(.systemBackground))
                 .cornerRadius(24)
                 .shadow(radius: 20)
                 .zIndex(2)
             }
             
-            // ✅ Fixed NavigationLink — pass BINDINGS not Strings
+            // MARK: NavigationLink
             NavigationLink(
                 destination: task2(selectedDuration: $selectedDuration, subject: $subject),
                 isActive: $navigateToTask2
